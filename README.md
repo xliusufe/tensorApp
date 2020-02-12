@@ -12,7 +12,7 @@
 
 # Usage
 
-   - [x] [tensorIA-manual](https://github.com/xliusufe/tensorApp/blob/master/inst/tensorApp-manual.pdf) ------------ Details of the usage of the package.
+   - [x] [tensorApp-manual](https://github.com/xliusufe/tensorApp/blob/master/inst/tensorApp-manual.pdf) ------------ Details of the usage of the package.
 # Example
 
     library(tensorApp)
