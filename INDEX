@@ -1,8 +1,0 @@
-HOsvd                   High-order SVD approximation by Tucker and CP
-                        decomposition
-HOsvd_dr                High-order SVD approximation by Tucker and CP
-                        decomposition and selection of ranks
-TransUnfoldingsT        Transfer a tensor's modal unfoldings to
-                        another.
-tensorApp-package       High-order SVD approximation by Tucker and CP
-                        decomposition and selection of ranks

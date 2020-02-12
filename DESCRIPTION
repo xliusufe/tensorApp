@@ -15,5 +15,3 @@ Repository: github
 URL: https://github.com/xliusufe/tensorApp
 Encoding: UTF-8
 Packaged: 2020-01-03 01:35:21 UTC; admin
-Built: R 3.5.3; x86_64-w64-mingw32; 2020-02-12 06:11:00 UTC; windows
-Archs: i386, x64
