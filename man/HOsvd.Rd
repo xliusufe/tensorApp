@@ -51,7 +51,8 @@
   \item{Tn}{A list of estimated matrices of
               \eqn{U_1,U_2,\cdots,U_d} and core tensor \eqn{S}, \code{Tn=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S)}.}
   
-  \item{ranks }{The ranks of estimated tensor \code{Tnew}.}
+  \item{ranks }{The ranks of estimated tensor \code{Tnew}. It is a vector with the same length as \code{dims} if Tucker decomposition is used, 
+                or an integer if CP decomposition is used.}
   %\item{...}{ Other options for CompositeQuantile.}
 }
 

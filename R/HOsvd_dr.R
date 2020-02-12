@@ -60,7 +60,7 @@ HOsvd_dr <- function(Y,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NULL,eps
   
   if(isCP){
     Dnew <- CPALS_dr(Y,dd,dr,dims,D0,opts)
-    ranks1 = rep(1,N)
+    ranks1 = length(D0[[N+1]])
     D1 = D0
   }
   else{

@@ -56,14 +56,24 @@ MatrixXd TuckerALS(MatrixXd T1, int d0, VectorXi dims, VectorXi rs, List Dn, Lis
 	Sn = svdu.transpose()*T*Gamma;
 	Dn[N] = Sn;
 	Dnew = svdu*Sn*Gamma.transpose(); 
-	return TransferModalUnfoldingsT(Dnew,N,d0,dims);;
+	return Dnew;
 }
 
 //----------------------------------------------------------------**
 //***------------------CP approximation via ALS-------------------**
 // [[Rcpp::export]]
 MatrixXd CPALS(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList){
-
+	/*
+	CANDECOMP/PARAFAC Decomposition approximation via alterating least squares famewor
+	References:
+	Allen, G., 2012. 
+	Sparse higher-order principal components analysis, 
+	in: International Conference on Artificial Intelligence and Statistics, pp. 27-36.
+	
+	Zhengwu Zhanga, Genevera I. Allenb,c, Hongtu Zhud, David Dunson (2018).
+	Tensor network factorizations: Relationships between brain structural connectomes and traits.
+	Neuroimage
+	*/
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
@@ -126,13 +136,23 @@ MatrixXd CPALS(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList
 		D0[m] = U1;
 	}	
     D0[N] = lambda;	
-	return TransferModalUnfoldingsT(Tnew,N,d0,dims);
+	return Tnew;
 }
 //----------------------------------------------------------------**
 //***------------------CP approximation via ALS-------------------**
 // [[Rcpp::export]]
 MatrixXd CPALS_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList){
-
+	/*
+	CANDECOMP/PARAFAC Decomposition approximation via alterating least squares famewor
+	References:
+	Allen, G., 2012. 
+	Sparse higher-order principal components analysis, 
+	in: International Conference on Artificial Intelligence and Statistics, pp. 27-36.
+	
+	Zhengwu Zhanga, Genevera I. Allenb,c, Hongtu Zhud, David Dunson (2018).
+	Tensor network factorizations: Relationships between brain structural connectomes and traits.
+	Neuroimage
+	*/
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
@@ -198,6 +218,7 @@ MatrixXd CPALS_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsL
 		U1 = as<MatrixXd>(Dnew[m]);
 		D0[m] = U1;
 	}	
-	D0[N] = lambda.head(k);
-	return TransferModalUnfoldingsT(Tnew,N,d0,dims);
+	if(k>0)	D0[N] = lambda.head(k-1);
+	else D0[N] = lambda.head(0);
+	return Tnew;
 }

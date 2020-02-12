@@ -63,7 +63,7 @@ HOsvd <- function(Y,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=20,D0=NULL,eps=1e-
   
   if(isCP){
     Dnew <- CPALS(Y,dd,dr,dims,D0,opts)
-    ranks <- rep(1,N)
+    ranks <- dr
   }
   else Dnew <- TuckerALS(Y,dd,dims,ranks,D0,opts)
   
