@@ -1,0 +1,5 @@
+importFrom("stats", "rnorm", "runif")
+useDynLib(tensorApp, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+export(HOsvd,HOsvd_dr,TransUnfoldingsT)
