@@ -84,5 +84,6 @@
   fit <- HOsvd(Y,N,dims,isCP=TRUE)
   Tnew <- fit$Tnew
   ranks1 <- fit$ranks
+  lambda <- fit$Tn[[N+1]]
   TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
 }

@@ -85,8 +85,9 @@
   U = qr.Q(qr(T1))
   Y <- U\%*\%S0\%*\%t(tmp)
   
-  fit <- HOsvd_dr(Y,N,dims,isCP=TRUE)
-  Tnew <- fit$Tnew
-  ranks1 <- fit$ranks
+  fit_dr <- HOsvd_dr(Y,N,dims,isCP=TRUE)
+  Tnew <- fit_dr$Tnew
+  ranks1 <- fit_dr$ranks
+  lambda <- fit_dr$Tn[[N+1]]
   TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
 }

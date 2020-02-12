@@ -36,6 +36,7 @@
     fit <- HOsvd(Y,N,dims,isCP=TRUE)
     Tnew <- fit$Tnew
     ranks1 <- fit$ranks
+    lambda <- fit$Tn[[N+1]]
     TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
   
     # Example 2 
@@ -44,6 +45,7 @@
     fit_dr <- HOsvd_dr(Y,N,dims,isCP=TRUE)
     Tnew <- fit_dr$Tnew
     ranks1 <- fit_dr$ranks
+    lambda <- fit_dr$Tn[[N+1]]
     TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
     
     # Example 3 
