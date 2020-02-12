@@ -3,10 +3,10 @@
 \alias{HOsvd}
 \docType{package}
 \title{
-  High-order SVD approximation by Tucker and CP decomposition
+  High-order SVD approximation of a tensor \code{Y} by Tucker or CP decomposition
 }
 \description{
-  High-order SVD approximation by Tucker decomposition or CANDECOMP/PARAFAC (CP) decomposition with preset rank.
+  High-order SVD approximation of a tensor \code{Y} by Tucker decomposition or CANDECOMP/PARAFAC (CP) decomposition with preset rank.
 }
 
 \usage{HOsvd(Y, d0=NULL, dims=NULL, isCP=TRUE, ranks=NULL, dr=20, 
@@ -85,5 +85,7 @@
   Tnew <- fit$Tnew
   ranks1 <- fit$ranks
   lambda <- fit$Tn[[N+1]]
+  U1 <- fit$Tn[[1]]
   TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
+  
 }

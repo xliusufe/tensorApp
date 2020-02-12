@@ -1,5 +1,5 @@
 # tensorApp
-  High-order SVD approximation by Tucker and CANDECOMP/PARAFAC (CP) decomposition and selection of ranks. Transfer a tensor's modal unfoldings to another.
+  High-order SVD approximation of a tensor by Tucker or CANDECOMP/PARAFAC (CP) decomposition and rank selection. Transfering a tensor's modal unfoldings to another.
  
   
 # Installation
@@ -17,7 +17,7 @@
 
     library(tensorApp)
     # Example 1 
-    # The usage of function "HOsvd()"
+    # The usage of function "HOsvd"
   
     dims <- c(8,8,10,10,6)
     N <- length(dims)
@@ -37,19 +37,21 @@
     Tnew <- fit$Tnew
     ranks1 <- fit$ranks
     lambda <- fit$Tn[[N+1]]
+    U1 <- fit$Tn[[1]]
     TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
   
     # Example 2 
-    # The usage of function "HOsvd_dr()"
+    # The usage of function "HOsvd_dr"
   
     fit_dr <- HOsvd_dr(Y,N,dims,isCP=TRUE)
     Tnew <- fit_dr$Tnew
     ranks1 <- fit_dr$ranks
     lambda <- fit_dr$Tn[[N+1]]
+    U1 <- fit_dr$Tn[[1]]
     TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
     
     # Example 3 
-    # The usage of function "TransUnfoldingsT()"
+    # The usage of function "TransUnfoldingsT"
 
     T1 <- matrix(1:24,nrow = 4)
     T2 <- TransUnfoldingsT(T1,1,2,c(4,3,2))

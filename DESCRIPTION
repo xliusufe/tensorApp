@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: c(person(given = "Xu", family = "Liu", role = c("aut","cre"), email = "liu.xu@sufe.edu.cn"))
 Author: Xu Liu [aut,cre].        
 Maintainer: Xu Liu <liu.xu@sufe.edu.cn>
-Description: High-order SVD approximation by Tucker and CP decomposition and selection of ranks. 
+Description: High-order SVD approximation of a tensor by Tucker or CP decomposition and rank selection. 
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.11.15), RcppEigen (>= 0.3.2.3.0)
 LinkingTo: Rcpp, RcppEigen
