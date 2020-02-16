@@ -80,10 +80,10 @@
     fit <- cpsym2(Y,r1=r1,r2=r2,d0=N,dims=dims)
     Tnew <- fit$Tnew
     ranks1 <- fit$ranks
-    U1 <- fit$Tn[[1]]
-    U2 <- fit$Tn[[2]]
-    TNew1 <- ttu(Tnew,N,1,dims)
-    TNew2 <- ttu(Tnew,N,2,dims)  
+    U1 <- fit$Tn[[r1]]
+    U2 <- fit$Tn[[r2]]
+    TNew1 <- ttu(Tnew,N,r1,dims)
+    TNew2 <- ttu(Tnew,N,r2,dims)  
     
   
 # Development
