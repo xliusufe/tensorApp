@@ -22,8 +22,25 @@ struct Options
 	int max_step;
 	double eps1;	
 	int max_step1;	
+	int isfixr;
 }opts;
 
+//----------------------------------------------------------------**
+//***----------------------Max of a Vector------------------------**
+double MaxVector(VectorXd V, int n){
+	double x=V[0];
+	for(int i=1;i<n;i++)
+		x = MAX(x,V[i]);
+	return x;	
+}
+//----------------------------------------------------------------**
+//***----------------------Max of a Vector------------------------**
+int MinVectorInt(VectorXi V, int n){
+	int x=V[0];
+	for(int i=1;i<n;i++)
+		x = MIN(x,V[i]);
+	return x;	
+}
 //----------------------------------------------------------------**
 //***----------------------cbind----------------------------------**
 MatrixXd cbind_rcpp(MatrixXd A, MatrixXd B)
@@ -144,4 +161,46 @@ MatrixXd TransferModalUnfoldingsT(MatrixXd T, int d1, int d2, VectorXi dims)
 		return TransferModalUnfoldingsT1d(
 		       TransferModalUnfoldingsTd1(T, d1, dims),
 			   d2, dims);
+}
+//----------------------------------------------------------------**
+//***--------------generate a semi-symmetric tensor---------------**
+// [[Rcpp::export]]
+MatrixXd gtsem0(MatrixXd S, int r1, int r2, VectorXi dims){
+	int j,k,i0,flag=1,d=S.size(),count=1,d1=dims[r1-1];
+	VectorXi resid;
+	MatrixXd S1,S2;
+	S1.setZero(d,1);
+	resid.setZero(d);
+	S.resize(d,1);
+	
+	for(j=1;j<d;j++){
+		S1(j,0) = j;
+		resid[j] = j;
+	}
+	S1.resize(d1,d/d1);
+	S2 = TransferModalUnfoldingsT(S1,r1,r2,dims);
+	S2.resize(d,1);
+	
+	while(count<d){
+		for(k=count;k<d;k++){
+			if(resid[k]>0){
+				j = resid[k];
+				count = k+1;
+				break;
+			}
+		}
+		if(k>=d) break;
+		
+		i0 = j;
+		while(flag){
+			if(S2(j,0)==i0)  break;
+			else{
+				j = S2(j,0);
+				S(j,0) = S(i0,0);
+				resid[j] = 0;
+			}
+		}
+	}
+	S.resize(d1,d/d1);
+	return S;
 }

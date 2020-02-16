@@ -9,15 +9,39 @@ TuckerALS <- function(T1, d0, dims, rs, Dn, optsList) {
     .Call(`_tensorApp_TuckerALS`, T1, d0, dims, rs, Dn, optsList)
 }
 
+CPTPM <- function(T0, d0, d, dims, D0, optsList) {
+    .Call(`_tensorApp_CPTPM`, T0, d0, d, dims, D0, optsList)
+}
+
+CPTPMorthogon <- function(T0, d0, d, dims, D0, optsList) {
+    .Call(`_tensorApp_CPTPMorthogon`, T0, d0, d, dims, D0, optsList)
+}
+
+CPTPM_dr <- function(T0, d0, d, dims, D0, optsList) {
+    .Call(`_tensorApp_CPTPM_dr`, T0, d0, d, dims, D0, optsList)
+}
+
+CPTPMorthogon_dr <- function(T0, d0, d, dims, D0, optsList) {
+    .Call(`_tensorApp_CPTPMorthogon_dr`, T0, d0, d, dims, D0, optsList)
+}
+
 CPALS <- function(T0, d0, d, dims, D0, optsList) {
     .Call(`_tensorApp_CPALS`, T0, d0, d, dims, D0, optsList)
 }
 
-CPALS_dr <- function(T0, d0, d, dims, D0, optsList) {
-    .Call(`_tensorApp_CPALS_dr`, T0, d0, d, dims, D0, optsList)
+CPTPMsym2 <- function(T0, d, k1, k2, dims, D0, optsList) {
+    .Call(`_tensorApp_CPTPMsym2`, T0, d, k1, k2, dims, D0, optsList)
+}
+
+CPTPMsym2Orth <- function(T0, d, k1, k2, dims, D0, optsList) {
+    .Call(`_tensorApp_CPTPMsym2Orth`, T0, d, k1, k2, dims, D0, optsList)
 }
 
 TransferModalUnfoldingsT <- function(T, d1, d2, dims) {
     .Call(`_tensorApp_TransferModalUnfoldingsT`, T, d1, d2, dims)
+}
+
+gtsem0 <- function(S, r1, r2, dims) {
+    .Call(`_tensorApp_gtsem0`, S, r1, r2, dims)
 }
 

@@ -1,6 +1,6 @@
-\name{TransUnfoldingsT}
-\alias{TransUnfoldingsT-function}
-\alias{TransUnfoldingsT}
+\name{ttu}
+\alias{ttu-function}
+\alias{ttu}
 \docType{package}
 \title{Transfer a tensor's modal unfoldings to another.}
 \description{
@@ -8,7 +8,7 @@
 }
 
 \usage{
-TransUnfoldingsT(S, d1=NULL, d2=0 , dims=NULL)
+ttu(S=NULL, d1=NULL, d2=0, dims=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -42,7 +42,7 @@ TransUnfoldingsT(S, d1=NULL, d2=0 , dims=NULL)
 \keyword{ CP decomposition; HOSVD; Tucker decomposition}
 \examples{
   T1 <- matrix(1:24,nrow = 4) # A tensor unfolding with size 4*6
-  T2 <- TransUnfoldingsT(T1,1,2,c(4,3,2))
+  T2 <- ttu(T1,1,2,c(4,3,2))
   
-  T0 <- TransUnfoldingsT(T2,2,dims=c(4,3,2))
+  T0 <- ttu(T2,2,dims=c(4,3,2))
 }

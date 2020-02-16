@@ -17,7 +17,7 @@
 
     library(tensorApp)
     # Example 1 
-    # The usage of function "HOsvd"
+    # The usage of function "hosvd"
   
     dims <- c(8,8,10,10,6)
     N <- length(dims)
@@ -33,30 +33,58 @@
     U = qr.Q(qr(T1))
     Y <- U%*%S0%*%t(tmp)
   
-    fit <- HOsvd(Y,N,dims,isCP=TRUE)
+    fit <- hosvd(Y,N,dims,isCP=TRUE)
     Tnew <- fit$Tnew
     ranks1 <- fit$ranks
     lambda <- fit$Tn[[N+1]]
     U1 <- fit$Tn[[1]]
-    TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
+    TNew1 <- ttu(Tnew,N,1,dims)
   
     # Example 2 
-    # The usage of function "HOsvd_dr"
+    # The usage of function "hosvd_dr"
   
-    fit_dr <- HOsvd_dr(Y,N,dims,isCP=TRUE)
+    fit_dr <- hosvd_dr(Y,N,dims,isCP=TRUE)
     Tnew <- fit_dr$Tnew
     ranks1 <- fit_dr$ranks
     lambda <- fit_dr$Tn[[N+1]]
     U1 <- fit_dr$Tn[[1]]
-    TNew1 <- TransUnfoldingsT(Tnew,N,1,dims)
+    TNew1 <- ttu(Tnew,N,1,dims)
     
     # Example 3 
-    # The usage of function "TransUnfoldingsT"
+    # The usage of function "cpals"
+  
+    fit_cp <- cpals(Y,N,dims)
+    Tnew <- fit_cp$Tnew
+    ranks1 <- fit_cp$ranks
+    lambda <- fit_cp$Tn[[N+1]]
+    U1 <- fit_cp$Tn[[1]]
+    TNew2 <- ttu(Tnew,N,1,dims)
+	
+    # Example 4 
+    # The usage of function "ttu"
 
     T1 <- matrix(1:24,nrow = 4)
-    T2 <- TransUnfoldingsT(T1,1,2,c(4,3,2))
+    T2 <- ttu(T1,1,2,c(4,3,2))
   
-    T0 <- TransUnfoldingsT(T2,2,dims=c(4,3,2))  
+    T0 <- ttu(T2,2,dims=c(4,3,2))  
+
+    # Example 5 
+    # The usage of function "cpsym2"  
+    dims <- c(8,6,10,6,7)
+    N <- length(dims)
+    lambda <- seq(6,1,by=-1)
+    r1 <- 2
+    r2 <- 4
+    dr <- 5
+    Y = gtcpsem(dims=dims,lambda=lambda,r1=r1,r2=r2,d0=r1,dr=dr)
+    fit <- cpsym2(Y,r1=r1,r2=r2,d0=N,dims=dims)
+    Tnew <- fit$Tnew
+    ranks1 <- fit$ranks
+    U1 <- fit$Tn[[1]]
+    U2 <- fit$Tn[[2]]
+    TNew1 <- ttu(Tnew,N,1,dims)
+    TNew2 <- ttu(Tnew,N,2,dims)  
+    
   
 # Development
 The R-package is developed by Xu Liu (liu.xu@sufe.edu.cn).

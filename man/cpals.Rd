@@ -1,17 +1,17 @@
-\name{hosvd}
-\alias{hosvd-function}
-\alias{hosvd}
+\name{cpals}
+\alias{cpals-function}
+\alias{cpals}
 \docType{package}
 \title{
-  High-order SVD approximation of a tensor \code{Y} by Tucker or CP decomposition
+  High-order SVD approximation of a tensor \code{Y} by CP decomposition
 }
 \description{
-  High-order SVD approximation of a tensor \code{Y} by Tucker decomposition or CANDECOMP/PARAFAC (CP) decomposition with preset rank. 
-  Alternating Least Squares algorithm is applied to Tuchker decomposition, and Tensor Power Method is applied to CP decomposition. 
+  High-order SVD approximation of a tensor \code{Y} by CANDECOMP/PARAFAC (CP) decomposition with preset rank or rank to be selected. 
+  The Alternating Least Squares (als) algorithm is applied.
 }
 
-\usage{hosvd(Y=NULL, d0=NULL, dims=NULL, isCP=TRUE, ranks=NULL, dr=20, 
-                                  D0=NULL,isOrth=FALSE, eps=1e-6, max_step=100)
+\usage{cpals(Y=NULL, d0=NULL, dims=NULL, dr=10, isfixr=FALSE, 
+                              D0=NULL, eps=1e-4, max_step=50, thresh=1e-6)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,23 +25,23 @@
              \code{dims} can be NULL (the default) if \code{Y} is an array with dimension \code{dims}. 
              If the length of \code{dims} is 2, it is the ordinary SVD decomposition of a matrix.}
   
-  \item{isCP}{A logical value indicating whether CP decomposition will be used. Default is \code{TRUE}.}
-  
-  \item{ranks}{The user-specified ranks. It is a vector with length \eqn{d}. Default is \eqn{(2,\cdots,2)}.}
-  
-  \item{dr}{The user-specified rank for CP decomposition. It is useless if Tucker decomposition is used. Default is 20.}
-  
+  \item{dr}{The user-specified rank for CP decomposition. Default is \code{10}.}
+
+ \item{isfixr}{A logical value indicating whether the rank is fixed. The rank is  selected automatically if it is \code{FALSE}. Default is \code{FALSE}.}
+ 
   \item{D0}{A user-specified list of initial matrices of \eqn{U_1,U_2,\cdots,U_d} and core tensor \eqn{S},
             \code{D0=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S)}.
             By default, initial matrices are provided by random.}
     
-  \item{isOrth}{A logical value indicating whether it outputs orthonognal PCs if CP decomposition is used. Default is \code{FALSE}.}
-  
   \item{eps}{Convergence threshhold.  The algorithm iterates until the
     relative change in any coefficient is less than \code{eps}.  Default
-    is \code{1e-6}.}
+    is \code{1e-4}.}
     
-  \item{max_step}{Maximum number of iterations.  Default is 100.}
+  \item{max_step}{Maximum number of iterations.  Default is 50.}
+  
+  \item{thresh}{Convergence threshhold in the outer loop.  The algorithm iterates until the
+             relative change in any coefficient is less than \code{eps}.  Default
+             is \code{1e-6}.}    
 }
 
 \details{This function gives a \eqn{n_{d0}\times N/n_{d0}} matrix, which is the mode-\code{d0} unfolding, and approximates \code{Y}. 
@@ -55,8 +55,7 @@
   \item{Tn}{A list of estimated matrices of
               \eqn{U_1,U_2,\cdots,U_d} and core tensor \eqn{S}, \code{Tn=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S)}.}
   
-  \item{ranks }{The ranks of estimated tensor \code{Tnew}. It is a vector with the same length as \code{dims} if Tucker decomposition is used, 
-                or an integer if CP decomposition is used.}
+  \item{ranks }{The ranks of estimated tensor \code{Tnew}. It is an integer.}
   %\item{...}{ Other options for CompositeQuantile.}
 }
 
@@ -85,10 +84,9 @@
   U <- qr.Q(qr(T1))
   Y <- U\%*\%S0\%*\%t(tmp)
   
-  fit <- hosvd(Y,N,dims,isCP=TRUE)
+  fit <- cpals(Y,N,dims)
   Tnew <- fit$Tnew
   ranks1 <- fit$ranks
-  lambda <- fit$Tn[[N+1]]
   U1 <- fit$Tn[[1]]
   TNew1 <- ttu(Tnew,N,1,dims)
   

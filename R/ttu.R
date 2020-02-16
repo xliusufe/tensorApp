@@ -1,5 +1,5 @@
 
-TransUnfoldingsT <- function(S,d1=NULL,d2=0,dims=NULL){
+ttu <- function(S=NULL,d1=NULL,d2=0,dims=NULL){
   
   if(is.null(S)) stop("Tensor T must not be NULL !")
   if(is.null(dims)){
@@ -21,7 +21,6 @@ TransUnfoldingsT <- function(S,d1=NULL,d2=0,dims=NULL){
   if(d2==0){
     Td2 = array(TransferModalUnfoldingsT(S,dd,1,dims),dim=dims)
   }
-  else if(d2==1) Td2 = S
   else  Td2 = TransferModalUnfoldingsT(S,dd,d2,dims)
   
   return (Td2)

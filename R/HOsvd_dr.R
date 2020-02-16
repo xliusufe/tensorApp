@@ -1,7 +1,7 @@
 
 ##--------------main by BIC without sparsity----------------------##
-HOsvd_dr <- function(Y,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NULL,eps=1e-6,max_step=100,thresh=1e-6){
-
+hosvd_dr <- function(Y=NULL,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NULL,isOrth=FALSE,eps=1e-6,max_step=100,thresh=1e-6){
+  
   if(is.null(Y)) stop("Tensor Y must not be NULL !")
   if(is.null(dims)){
     warning("Dimension dims is NULL !") 
@@ -27,7 +27,7 @@ HOsvd_dr <- function(Y,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NULL,eps
                  )
             )
   } 
-    
+  
   if(is.null(d0)){
     dd = 1
     Y = matrix(Y,dims[1])
@@ -59,8 +59,9 @@ HOsvd_dr <- function(Y,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NULL,eps
   opts = list(eps=eps,max_step=max_step,N=N,eps1=thresh,max_step1=max_step)
   
   if(isCP){
-    Dnew <- CPALS_dr(Y,dd,dr,dims,D0,opts)
-    ranks1 = length(D0[[N+1]])
+    if(isOrth) Dnew <- CPTPMorthogon(Y,dd,dr,dims,D0,opts)
+    else Dnew <- CPTPM_dr(Y,dd,dr,dims,D0,opts)
+    ranks1 = D0[[N+1]]
     D1 = D0
   }
   else{

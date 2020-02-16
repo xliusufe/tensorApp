@@ -6,7 +6,7 @@ assig <- function(n_args){
 }
 
 
-HOsvd <- function(Y,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=20,D0=NULL,eps=1e-6,max_step=100){
+hosvd <- function(Y=NULL,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=20,D0=NULL,isOrth=FALSE,eps=1e-6,max_step=100){
   
   if(is.null(Y)) stop("Tensor Y must not be NULL !")
   if(is.null(dims)){
@@ -62,8 +62,9 @@ HOsvd <- function(Y,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=20,D0=NULL,eps=1e-
   opts = list(eps=eps,max_step=max_step,N=N,eps1=eps,max_step1=max_step)
   
   if(isCP){
-    Dnew <- CPALS(Y,dd,dr,dims,D0,opts)
-    ranks <- dr
+    if(isOrth) Dnew <- CPTPMorthogon(Y,dd,dr,dims,D0,opts)
+    else Dnew <- CPTPM(Y,dd,dr,dims,D0,opts)
+    ranks <- D0[[N+1]]
   }
   else Dnew <- TuckerALS(Y,dd,dims,ranks,D0,opts)
   
