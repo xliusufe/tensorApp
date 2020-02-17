@@ -7,7 +7,7 @@
 }
 \description{
   High-order SVD approximation of a tensor \code{Y} by Tucker decomposition or CANDECOMP/PARAFAC (CP) decomposition and selection of ranks. 
-  Alternating Least Squares algorithm is applied to Tuchker decomposition, and both Alternating Least Squares algorithm or 
+  Alternating Least Squares algorithm is applied to Tucker decomposition, and both Alternating Least Squares algorithm or 
   Tensor Power Method are applied to CP decomposition. This package provides several generator functions, which generate low-rank tensor or low-rank semi-symmetric tensor. 
 }
 \details{

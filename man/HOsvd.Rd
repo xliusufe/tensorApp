@@ -6,8 +6,8 @@
   High-order SVD approximation of a tensor \code{Y} by Tucker or CP decomposition
 }
 \description{
-  High-order SVD approximation of a tensor \code{Y} by Tucker decomposition or CANDECOMP/PARAFAC (CP) decomposition with preset rank. 
-  Alternating Least Squares algorithm is applied to Tuchker decomposition, and Tensor Power Method is applied to CP decomposition. 
+  High-order SVD approximation of a tensor \code{Y} by Tucker decomposition or CANDECOMP/PARAFAC (CP) decomposition with preseted rank. 
+  Alternating Least Squares algorithm is applied to Tucker decomposition, and Tensor Power Method is applied to CP decomposition. 
 }
 
 \usage{hosvd(Y=NULL, d0=NULL, dims=NULL, isCP=TRUE, ranks=NULL, dr=20, 
@@ -31,9 +31,9 @@
   
   \item{dr}{The user-specified rank for CP decomposition. It is useless if Tucker decomposition is used. Default is 20.}
   
-  \item{D0}{A user-specified list of initial matrices of \eqn{U_1,U_2,\cdots,U_d} and core tensor \eqn{S},
-            \code{D0=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S)}.
-            By default, initial matrices are provided by random.}
+  \item{D0}{A user-specified list of initial matrices of \eqn{U_1,U_2,\cdots,U_d} and the mode-\eqn{d0} unfolding \eqn{S_{(d0)}} of the core tensor \eqn{S},
+            \code{D0=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S_{(d0)})}.
+            By default, initial matrices are provided randomly.}
     
   \item{isOrth}{A logical value indicating whether it outputs orthonognal PCs if CP decomposition is used. Default is \code{FALSE}.}
   
@@ -52,8 +52,8 @@
 %%  If it is a LIST, use
   \item{Tnew}{Approximation of \code{Y}.}
   
-  \item{Tn}{A list of estimated matrices of
-              \eqn{U_1,U_2,\cdots,U_d} and core tensor \eqn{S}, \code{Tn=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S)}.}
+  \item{Tn}{A list of estimated matrices of \eqn{U_1,U_2,\cdots,U_d} and the mode-\eqn{d0} unfolding \eqn{S_{(d0)}} of the core tensor \eqn{S}, 
+            \code{Tn=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S_{(d0)})}.}
   
   \item{ranks }{The ranks of estimated tensor \code{Tnew}. It is a vector with the same length as \code{dims} if Tucker decomposition is used, 
                 or an integer if CP decomposition is used.}

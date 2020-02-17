@@ -6,7 +6,7 @@
   Modal Product
 }
 \description{
-  Modal product calculate the product an order \eqn{d} tensor \eqn{S} and a matrix \eqn{M}, that is \eqn{T = S \times _{d0} M}, \eqn{T_{(d0)} = M \cdot S_{(d0)}}, 
+  Modal product calculates the product an order \eqn{d} tensor \eqn{S} and a matrix \eqn{M}, that is \eqn{T = S \times _{d0} M} that means \eqn{T_{(d0)} = M \cdot S_{(d0)}}, 
   where \eqn{S_{(d0)}} is the mode-\eqn{d0} unfloding of the tensor \eqn{S}.
 }
 
@@ -16,8 +16,8 @@
 \arguments{
   \item{S}{An order \eqn{d} tensor with dimension \code{dims}, where \code{dims} is \eqn{(n_1,\cdots, n_d)}.}
   
-  \item{M}{A matrix with \eqn{n_{d0}} columns and \eqn{K} rows. The modal product produce  a new order \eqn{d} tensor with dimension \code{dims} 
-           replaced the \code{d0} dimnesion by \eqn{K}. }
+  \item{M}{A matrix with \eqn{K} rows and \eqn{n_{d0}} columns. The modal product produces  a new order \eqn{d} tensor with dimension \code{dims} 
+           replaced the \code{d0}th dimnesion by \eqn{K}. }
   
   \item{dims}{The dimension of tensor \code{Y}, which is a \eqn{d}-vector \eqn{(n_1,\cdots,n_d)}.}
  
@@ -26,8 +26,8 @@
 
 \details{This function gives the modal product of tensor \eqn{S} and matrix \eqn{M}, which is the product of \eqn{M} 
          and the mode-\code{d0} unfolding of tensor \eqn{S}, that is \eqn{S\times _{d0} M=MS_{(d0)}}, 
-         where \eqn{S_{(d0)}} is the mode-\eqn{d0} unfloding of the tensor \eqn{S}. The modal product produce  
-         a new order \eqn{d} tensor with dimension \code{dims} replaced the \code{d0} dimnesion by \eqn{K}.
+         where \eqn{S_{(d0)}} is the mode-\code{d0} unfolding of the tensor \eqn{S}. The modal product produce  
+         a new order \eqn{d} tensor with dimension \code{dims} replaced the \code{d0} dimnesion by \eqn{K}, where \eqn{K} is the number of rows of matrix \eqn{M}.
 }
 
 \value{

@@ -2,9 +2,9 @@
 \alias{ttu-function}
 \alias{ttu}
 \docType{package}
-\title{Transfer a tensor's modal unfoldings to another.}
+\title{Transfer a tensor's modal unfolding to another.}
 \description{
-  Transfer a tensor's modal unfoldings to another. 
+  Transfer a tensor's modal unfolding to another. 
 }
 
 \usage{

@@ -5,7 +5,8 @@
 \title{Generate a low-rank semi-symmetric tensor characterizing the form of Tucker decomposition}
 \description{
   This function generates a low-rank semi-symmetric tensor characterizing the form of Tucker decomposition with dimension \code{dims} and core tensor \code{S}.
-  The semi-symmetric tensor means that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal, where the absolute difference of \code{r1} and \code{r2}
+  The semi-symmetric tensor means that both mode-\code{r1} and mode-\code{r2} unfoldings are equal, hat is, 
+  \eqn{T_{(r1)} = T_{(r2)}} for the output tensor \eqn{T}, where the absolute difference of \code{r1} and \code{r2}
   is restricted to no more than 3.
 }
 
@@ -22,16 +23,16 @@ gttsem(dims, S=NULL, r1=1, r2=2, d0=NULL, ranks=NULL, seed_id=2)
             Core tensor \code{S} will be given randomly if it is \code{NULL}.}
   
   \item{r1}{Both \code{r1} and \code{r2} are the user-specified modes, which means 
-            that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
+            that both mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
 
   \item{r2}{Both \code{r1} and \code{r2} are the user-specified modes, which means 
-            that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
+            that both mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
             
   \item{d0}{\code{d0} is the mode. The output tensor is the mode-\code{d0} unfolding of the tensor. \code{d0} can be NULL (the default) 
             if the output tensor is an array with dimension \code{dims}.} 
 
   \item{ranks}{The user-specified ranks. It is a vector with length \eqn{d}. If \code{ranks} is \code{NULL} (the default), 
-               this function outputs a tensor without low-rank.}
+               this function outputs a semi-symmetric tensor without low-rank.}
   
   \item{seed_id}{A positive integer, the seed for generating the random numbers. Default is 2.} 
 

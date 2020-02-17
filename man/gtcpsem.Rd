@@ -4,8 +4,10 @@
 \docType{package}
 \title{Generate a low-rank semi-symmetric tensor characterizing the form of CP decomposition}
 \description{
-  This function generates a low-rank semi-symmetric tensor characterizing the form of CANDECOMP/PARAFAC (CP) decomposition with dimension \code{dims} and factors \code{lambda}.
-  The semi-symmetric tensor means that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal.
+  This function generates a low-rank semi-symmetric tensor characterizing the form of CANDECOMP/PARAFAC (CP) decomposition with 
+  the dimension \code{dims} and factors \code{lambda}.
+  The semi-symmetric tensor means that both mode-\code{r1} and mode-\code{r2} unfoldings are equal, that is, 
+  \eqn{T_{(r1)} = T_{(r2)}} for the output tensor \eqn{T}.
 }
 
 \usage{
@@ -20,10 +22,10 @@ gtcpsem(dims, lambda=NULL, r1=1, r2=2, d0=NULL, dr=NULL, seed_id=2)
   \item{lambda}{The factors of CP decomposition. It is an vector. Factors \code{lambda} will be given randomly if it is \code{NULL}.}
   
   \item{r1}{Both \code{r1} and \code{r2} are the user-specified modes, which means 
-            that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
+            that both mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
 
   \item{r2}{Both \code{r1} and \code{r2} are the user-specified modes, which means 
-            that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
+            that both mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
             
   \item{d0}{\code{d0} is the mode. The output tensor is the mode-\code{d0} unfolding of the tensor. \code{d0} can be NULL (the default) 
             if the output tensor is an array with dimension \code{dims}.} 

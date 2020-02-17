@@ -6,9 +6,10 @@
   High-order SVD approximation of a tensor \code{Y} by CP decomposition
 }
 \description{
-  High-order SVD approximation of a semi-symmetric tensor \code{Y} by CANDECOMP/PARAFAC (CP) decomposition with preset rank or rank to be selected. 
-  The Tensor Power Method is applied. The semi-symmetric tensor means that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal. 
-  For semi-symmetric tensor approximation, the \code{r1} and \code{r2} dimensions must be small than others.
+  High-order SVD approximation of a semi-symmetric tensor \code{Y} by CANDECOMP/PARAFAC (CP) decomposition with rank preseted or to be selected. 
+  The Tensor Power Method is applied. The semi-symmetric tensor means that both mode-\code{r1} and mode-\code{r2} unfoldings are equal, that is, 
+  \eqn{Y_{(r1)} = Y_{(r2)}}. 
+  For semi-symmetric tensor approximation, the \code{r1}th and \code{r2}th dimensions must be smaller than others.
 }
 
 \usage{cpsym2(Y=NULL, r1=1, r2=2, d0=NULL, dims=NULL, dr=10, D0=NULL, isfixr=FALSE, 
@@ -20,10 +21,10 @@
            that is the mode \code{d0}-unfolding of tensor in \eqn{\mathcal{R}^{n_1\times\cdots\times n_d}}, where \eqn{N=n_1\times\cdots\times n_d}.}
 
   \item{r1}{Both \code{r1} and \code{r2} are the user-specified modes, which means 
-            that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
+            that both mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
 
   \item{r2}{Both \code{r1} and \code{r2} are the user-specified modes, which means 
-            that both the mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
+            that both mode-\code{r1} and mode-\code{r2} unfoldings are equal. Default is \code{r1 = 1} and \code{r2 = 2}.}
             
   \item{d0}{\code{d0} is the mode. \code{Y} is the mode-\code{d0} unfolding of the tensor. \code{d0} can be NULL (the default) 
             if \code{Y} is an array with dimension \code{dims}.} 
@@ -83,10 +84,12 @@
   N <- length(dims)
   ranks <- rep(2,N)
   dm <- prod(ranks)
-  S1 <- matrix(runif(dm,3,7),nrow = ranks[1])
-  S2 <- ttu(S1,1,2,ranks)
+  r1 <- 1
+  r2 <- 2
+  S1 <- matrix(runif(dm,3,7),nrow = ranks[r1])
+  S2 <- ttu(S1,r1,r2,ranks)
   S1 <- (S1+S2)/2
-  S0 <- ttu(S1,1,N,ranks)
+  S0 <- ttu(S1,r1,N,ranks)
   
   T1 <- matrix(rnorm(dims[1]*ranks[1]),nrow = dims[1])
   tmp <- qr.Q(qr(T1))

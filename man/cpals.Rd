@@ -6,7 +6,7 @@
   High-order SVD approximation of a tensor \code{Y} by CP decomposition
 }
 \description{
-  High-order SVD approximation of a tensor \code{Y} by CANDECOMP/PARAFAC (CP) decomposition with preset rank or rank to be selected. 
+  High-order SVD approximation of a tensor \code{Y} by CANDECOMP/PARAFAC (CP) decomposition with rank preseted or to be selected. 
   The Alternating Least Squares (als) algorithm is applied.
 }
 
