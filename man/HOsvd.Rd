@@ -71,6 +71,7 @@
 }
 \examples{ 
   
+  # Example 1
   dims <- c(8,8,10,10,6)
   N <- length(dims)
   ranks <- rep(2,N)
@@ -92,4 +93,23 @@
   U1 <- fit$Tn[[1]]
   TNew1 <- ttu(Tnew,N,1,dims)
   
+  
+  # Example 2
+  library(png)
+  bat = readPNG(system.file("bat", "bat.jpg", package="tensorApp"))
+  writePNG(bat,target = "bat.png")
+  
+  Tn = hosvd(bat,dr=20,dims=dim(bat))
+  writePNG(Tn$Tnew,target = "batCP.png")
+  Tn = hosvd(bat,dr=50,dims=dim(bat),isCP=F,ranks = c(20,20,3))
+  writePNG(Tn$Tnew,target = "batTucker.png")
+  
+  # Example 3
+  img = readPNG(system.file("img", "Rlogo.png", package="png"))
+  writePNG(img,target = "Rlog.png")
+  
+  Tn = hosvd(img,dr=20,dims=dim(img))
+  writePNG(Tn$Tnew,target = "RlogCP.png")
+  Tn = hosvd(img,dr=20,dims=dim(img),isCP=F,ranks = c(20,20,4))
+  writePNG(Tn$Tnew,target = "RlogTucker.png")
 }

@@ -29,7 +29,7 @@
   
   \item{ranks}{The user-specified ranks. It is a vector with length \code{d}. Default is \eqn{(2,\cdots,2)}.}
   
-  \item{dr}{The user-specified rank for CP decomposition. It is useless if Tucker decomposition is used. Default is 100.}
+  \item{dr}{The user-specified rank for CP decomposition. The maximum rank \code{dm=min(dr, max(ranks))} if Tucker decomposition is used. Default is 100.}
   
   \item{D0}{A user-specified list of initial matrices of \eqn{U_1,U_2,\cdots,U_d} and the mode-\eqn{d0} unfolding \eqn{S_{(d0)}} of the core tensor \eqn{S},
             \code{D0=list}\eqn{(U_1=U_1,\cdots,U_d=U_d,S=S_{(d0)})}.
@@ -95,5 +95,4 @@
   lambda <- fit_dr$Tn[[N+1]]
   U1 <- fit_dr$Tn[[1]]
   TNew1 <- ttu(Tnew,N,1,dims)
-  
 }

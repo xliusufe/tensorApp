@@ -65,7 +65,7 @@ hosvd_dr <- function(Y=NULL,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NUL
     D1 = D0
   }
   else{
-    dm = min(ranks)
+    dm = min(dr,max(ranks))
     ranks1 = rep(1,N)
     D1 = list()
     for(j in 1:N){
@@ -76,7 +76,7 @@ hosvd_dr <- function(Y=NULL,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NUL
     flag = 0
     for(k in 1:dm){
       for(j in 1:N){
-        ranks1[j] = ranks1[j]+1
+        if(k<ranks1[j])  ranks1[j] = ranks1[j]+1
         A = D0[[j]]
         D1[[j]] = as.matrix(A[,1:ranks1[j]])
         ds = prod(ranks1)

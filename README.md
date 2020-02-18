@@ -85,6 +85,24 @@
     TNew1 <- ttu(Tnew,N,r1,dims)
     TNew2 <- ttu(Tnew,N,r2,dims)  
     
+	# Example 6
+	library(png)
+	bat = readPNG(system.file("bat", "bat.jpg", package="tensorApp"))
+	writePNG(bat,target = "bat.png")
+
+	Tn = hosvd(bat,dr=20,dims=dim(bat))
+	writePNG(Tn$Tnew,target = "batCP.png")
+	Tn = hosvd(bat,dr=50,dims=dim(bat),isCP=F,ranks = c(20,20,3))
+	writePNG(Tn$Tnew,target = "batTucker.png")
+  
+    # Example 7
+	img = readPNG(system.file("img", "Rlogo.png", package="png"))
+	writePNG(img,target = "Rlog.png")
+  
+    Tn = hosvd(img,dr=20,dims=dim(img))
+	writePNG(Tn$Tnew,target = "RlogCP.png")
+	Tn = hosvd(img,dr=20,dims=dim(img),isCP=F,ranks = c(20,20,4))
+	writePNG(Tn$Tnew,target = "RlogTucker.png")
   
 # Development
 The R-package is developed by Xu Liu (liu.xu@sufe.edu.cn).
