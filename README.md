@@ -115,7 +115,7 @@
     writePNG(Tn$Tnew,target = "covid19Tucker.png")  
     
     
-    # Example 2
+    # Example 9
     img = readPNG(system.file("img", "Rlogo.png", package="tensorApp"))
     writePNG(img,target = "Rlogo.png")
     
