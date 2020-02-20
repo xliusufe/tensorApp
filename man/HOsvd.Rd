@@ -119,7 +119,7 @@
   writePNG(SarsCov2,target = "SarsCov2.png")
 
   Tn = hosvd(SarsCov2,dr=20,dims=dim(SarsCov2))
-  writePNG(Tn$Tnew,target = "covid19CP.png")
+  writePNG(Tn$Tnew,target = "SarsCov2CP.png")
   Tn = hosvd(SarsCov2,dr=50,dims=dim(SarsCov2),isCP=F,ranks = c(20,20,3))
   writePNG(Tn$Tnew,target = "SarsCov2Tucker.png")
 }
