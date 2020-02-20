@@ -1,5 +1,5 @@
 # tensorApp
-  High-order SVD approximation of a tensor by Tucker or CANDECOMP/PARAFAC (CP) decomposition and rank selection. Transfering a tensor's modal unfoldings to another.
+  High-order SVD approximation of a tensor by Tucker or CANDECOMP/PARAFAC (CP) decomposition and rank selection, including sparse PCA by CP decompostion. Transfering a tensor's modal unfoldings to another.
  
   
 # Installation
