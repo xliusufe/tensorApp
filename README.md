@@ -85,24 +85,42 @@
     TNew1 <- ttu(Tnew,N,r1,dims)
     TNew2 <- ttu(Tnew,N,r2,dims)  
     
-	# Example 6
-	library(png)
-	bat = readPNG(system.file("bat", "bat.jpg", package="tensorApp"))
-	writePNG(bat,target = "bat.png")
-
-	Tn = hosvd(bat,dr=20,dims=dim(bat))
-	writePNG(Tn$Tnew,target = "batCP.png")
-	Tn = hosvd(bat,dr=50,dims=dim(bat),isCP=F,ranks = c(20,20,3))
-	writePNG(Tn$Tnew,target = "batTucker.png")
-  
+    # Example 6
+    library(png)
+    bat = readPNG(system.file("img", "bat.png", package="tensorApp"))
+    writePNG(bat,target = "bat.png")
+    
+    Tn = hosvd(bat,dr=20,dims=dim(bat))
+    writePNG(Tn$Tnew,target = "batCP.png")
+    Tn = hosvd(bat,dr=50,dims=dim(bat),isCP=F,ranks = c(20,20,3))
+    writePNG(Tn$Tnew,target = "batTucker.png")
+    
     # Example 7
-	img = readPNG(system.file("img", "Rlogo.png", package="png"))
-	writePNG(img,target = "Rlog.png")
-  
+    library(png)
+    img = readPNG(system.file("img", "Rlogo.png", package="tensorApp"))
+    writePNG(img,target = "Rlogo.png")
+    
     Tn = hosvd(img,dr=20,dims=dim(img))
-	writePNG(Tn$Tnew,target = "RlogCP.png")
-	Tn = hosvd(img,dr=20,dims=dim(img),isCP=F,ranks = c(20,20,4))
-	writePNG(Tn$Tnew,target = "RlogTucker.png")
+    writePNG(Tn$Tnew,target = "RlogoCP.png")
+    Tn = hosvd(img,dr=20,dims=dim(img),isCP=F,ranks = c(20,20,4))
+    writePNG(Tn$Tnew,target = "RlogoTucker.png")
+    
+    # Example 8
+    covid19 = readPNG(system.file("img", "covid19.png", package="tensorApp"))
+    writePNG(covid19,target = "covid19.png")
+    
+    Tn = hosvd(covid19,dr=20,dims=dim(covid19))
+    writePNG(Tn$Tnew,target = "covid19CP.png")
+    Tn = hosvd(covid19,dr=50,dims=dim(covid19),isCP=F,ranks = c(20,20,3))
+    writePNG(Tn$Tnew,target = "covid19Tucker.png")  
+    
+    
+    # Example 2
+    img = readPNG(system.file("img", "Rlogo.png", package="tensorApp"))
+    writePNG(img,target = "Rlogo.png")
+    
+    Tn = spcacp(img,dr=20,dims=dim(img))
+    writePNG(Tn$Tnew,target = "RlogoCP.png")   
   
 # Development
 The R-package is developed by Xu Liu (liu.xu@sufe.edu.cn).

@@ -5,8 +5,8 @@ KRP <- function(A, B) {
     .Call(`_tensorApp_KRP`, A, B)
 }
 
-TuckerALS <- function(T1, d0, dims, rs, Dn, optsList) {
-    .Call(`_tensorApp_TuckerALS`, T1, d0, dims, rs, Dn, optsList)
+TuckerALS <- function(T1, d0, dims, rs, D0, optsList) {
+    .Call(`_tensorApp_TuckerALS`, T1, d0, dims, rs, D0, optsList)
 }
 
 CPTPM <- function(T0, d0, d, dims, D0, optsList) {
@@ -33,8 +33,16 @@ CPTPMsym2 <- function(T0, d, k1, k2, dims, D0, optsList) {
     .Call(`_tensorApp_CPTPMsym2`, T0, d, k1, k2, dims, D0, optsList)
 }
 
-CPTPMsym2Orth <- function(T0, d, k1, k2, dims, D0, optsList) {
-    .Call(`_tensorApp_CPTPMsym2Orth`, T0, d, k1, k2, dims, D0, optsList)
+CPTPMsym2Orth <- function(T0, d, k1, k2, dims, D0, optsList, optsList_pen) {
+    .Call(`_tensorApp_CPTPMsym2Orth`, T0, d, k1, k2, dims, D0, optsList, optsList_pen)
+}
+
+SCPTPM <- function(T0, d0, d, dims, D1, lambda, optsList, optsList_pen) {
+    .Call(`_tensorApp_SCPTPM`, T0, d0, d, dims, D1, lambda, optsList, optsList_pen)
+}
+
+SCPTPM_part <- function(T0, d0, d, dims, actives, D1, lambda, optsList, optsList_pen) {
+    .Call(`_tensorApp_SCPTPM_part`, T0, d0, d, dims, actives, D1, lambda, optsList, optsList_pen)
 }
 
 TransferModalUnfoldingsT <- function(T, d1, d2, dims) {
@@ -43,5 +51,9 @@ TransferModalUnfoldingsT <- function(T, d1, d2, dims) {
 
 gtsem0 <- function(S, r1, r2, dims) {
     .Call(`_tensorApp_gtsem0`, S, r1, r2, dims)
+}
+
+setuplambdaPC <- function(T0, d0, dims, D0, nlam, setlam) {
+    .Call(`_tensorApp_setuplambdaPC`, T0, d0, dims, D0, nlam, setlam)
 }
 

@@ -25,12 +25,29 @@ struct Options
 	int isfixr;
 }opts;
 
+struct Options_pen
+{
+	int pen; 
+	int nlam;
+	int dfmax;
+	int isPenColumn;
+	double lam_max;
+	double lam_min;
+	double alpha;
+	double gamma;
+	double eps;
+	double eps1;
+	double max_step;
+	double max_step1;
+}opts_pen;
+
 //----------------------------------------------------------------**
 //***----------------------Max of a Vector------------------------**
-double MaxVector(VectorXd V, int n){
+double MaxAbsVector(VectorXd V){
 	double x=V[0];
+	int n = V.size();
 	for(int i=1;i<n;i++)
-		x = MAX(x,V[i]);
+		x = MAX(x,fabs(V[i]));
 	return x;	
 }
 //----------------------------------------------------------------**
@@ -203,4 +220,94 @@ MatrixXd gtsem0(MatrixXd S, int r1, int r2, VectorXi dims){
 	}
 	S.resize(d1,d/d1);
 	return S;
+}
+//----------------------------------------------------------------**
+//***--------------------penalty----------------------------------**
+double penalties(double z, double v, double lambda, double alpha, double gamma, int penalty) {
+	double beta=0,l1,l2;
+	l1 = lambda*alpha; 
+	l2 = lambda*(1-alpha);
+	if (penalty==1){			  
+		if (z > l1) beta = (z-l1)/(v*(1+l2));
+		if (z < -l1) beta = (z+l1)/(v*(1+l2));
+	}
+	if (penalty==2){
+		double s = 0;
+		if (z > 0) s = 1;
+		else if (z < 0) s = -1;
+		if (fabs(z) <= l1) beta = 0;
+		else if (fabs(z) <= gamma*l1*(1+l2)) beta = s*(fabs(z)-l1)/(v*(1+l2-1/gamma));
+		else beta = z/(v*(1+l2));
+	}
+	if (penalty==3){
+		double s = 0;
+		if (z > 0) s = 1;
+		else if (z < 0) s = -1;
+		if (fabs(z) <= l1) beta = 0;
+		else if (fabs(z) <= (l1*(1+l2)+l1)) beta = s*(fabs(z)-l1)/(v*(1+l2));
+		else if (fabs(z) <= gamma*l1*(1+l2)) beta = s*(fabs(z)-gamma*l1/(gamma-1))/(v*(1-1/(gamma-1)+l2));
+		else beta = z/(v*(1+l2));
+	}
+	return(beta);
+}
+//----------------------------------------------------------------**
+//***----update the jth row of matrix A with penalty--------------**
+VectorXd updateAj(VectorXd z, double lambda, double alpha, double gamma, int penalty)
+{
+	int i,d=z.size();
+	for(i=0;i<d;i++)
+	z[i] = penalties(z[i], 1, lambda, alpha, gamma, penalty);
+	return z;
+}
+//----------------------------------------------------------------**
+//***-----------setup tuning parameters for SCPTPM----------------**
+// [[Rcpp::export]]
+VectorXd setuplambdaPC(MatrixXd T0, int d0, VectorXi dims, List D0, int nlam, VectorXd setlam)
+{
+	int N = dims.size(),j,m;
+	double lam_max, lam_min, alpha, max_lam, max_tmp,lamj;
+	VectorXd lambda, lambda1, Gamma,tmp,Uj;	
+	MatrixXd T,T1;
+	
+	T1 = TransferModalUnfoldingsT(T0,d0,N,dims);
+	
+	max_tmp=0;
+	for(m=0; m<N; m++){	
+		T = TransferModalUnfoldingsT(T1,N,m+1,dims);
+		if(m==0){
+			Gamma = as<VectorXd>(D0[1]);
+			for(j=2;j<N;j++){
+				tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+				Gamma = tmp;
+			}						
+		}
+		else{
+			Gamma = as<VectorXd>(D0[0]);
+			for(j=1;j<N;j++){
+				if(j!=m){
+					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+					Gamma = tmp;
+				}
+			}
+		}	
+		Uj = T*Gamma;
+		lamj = Uj.norm();
+		max_tmp = MAX(max_tmp,MaxAbsVector(Uj/lamj));	
+	}
+
+	lam_max = setlam[0];
+	lam_min = setlam[1];
+	alpha = setlam[2];
+	max_lam = lam_max * max_tmp / alpha;
+	if (lam_min == 0) {
+		lambda1.setLinSpaced(nlam - 1, log(max_lam), log(0.0001*max_lam));
+		lambda.setLinSpaced(nlam, 0, 0);
+		lambda.segment(0, nlam - 1) = lambda1.array().exp().matrix();
+	}
+	else {
+		lambda1.setLinSpaced(nlam, log(max_lam), log(lam_min*max_lam));
+		lambda = lambda1.array().exp();
+	}
+
+	return lambda;
 }

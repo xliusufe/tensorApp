@@ -17,43 +17,46 @@ MatrixXd KRP(MatrixXd A, MatrixXd B){//Khatri-Rao Product
 //----------------------------------------------------------------**
 //***------------------Tucker approximation via ALS---------------**
 // [[Rcpp::export]]
-MatrixXd TuckerALS(MatrixXd T1, int d0, VectorXi dims, VectorXi rs, List Dn, List optsList){
+MatrixXd TuckerALS(MatrixXd T1, int d0, VectorXi dims, VectorXi rs, List D0, List optsList){
 	//Tucker approximation via alterating least squares fameworw
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
 	
 	int m,j,N=opts.N,step = 0,rprod=1;
-	MatrixXd T,Gamma,Gamma1,Gamma2,tmp,svdu, Sn,S0,Dnew;
+	MatrixXd T,Gamma,tmp,svdu, Sn,S0,Dnew;
 	for(m=0;m<N-1;m++)  rprod*=rs[m];
 	S0.setZero(rs[N-1],rprod);
 
 	while(step < opts.max_step){
 		step++;
 		for(m=0;m<N;m++){
-			T = TransferModalUnfoldingsT(T1,d0,m+1,dims);
-			if(m!=0) Gamma1 = as<MatrixXd>(Dn[0]);
-			for(j=1;j<m;j++){
-				tmp = kroneckerProduct(as<MatrixXd>(Dn[j]),Gamma1);
-				Gamma1 = tmp;
+			T = TransferModalUnfoldingsT(T1,d0,m+1,dims);			
+			if(m==0){
+				Gamma = as<MatrixXd>(D0[1]);
+				for(j=2;j<N;j++){
+					tmp = kroneckerProduct(as<MatrixXd>(D0[j]),Gamma);
+					Gamma = tmp;
+				}						
+			}
+			else{
+				Gamma = as<MatrixXd>(D0[0]);
+				for(j=1;j<N;j++){
+					if(j!=m){
+						tmp = kroneckerProduct(as<MatrixXd>(D0[j]),Gamma);
+						Gamma = tmp;
+					}
+				}
 			}				
-			if(m!=N-1)Gamma2 = as<MatrixXd>(Dn[m+1]);
-			for(j=m+2;j<N;j++){
-				tmp = kroneckerProduct(as<MatrixXd>(Dn[j]),Gamma2);
-				Gamma2 = tmp;
-			}				
-			if(m==0) Gamma = Gamma2;
-			else if (m==N-1) Gamma = Gamma1;
-			else  Gamma = kroneckerProduct(Gamma2,Gamma1);	
 			JacobiSVD<MatrixXd> svd(T*Gamma, ComputeThinU | ComputeThinV);
 			svdu = svd.matrixU().leftCols(rs[m]);
-			Dn[m] = svdu;		
+			D0[m] = svdu;		
 		}		
 		Sn = svdu.transpose()*T*Gamma;
 		if((Sn-S0).norm()/(S0.norm()+1)<opts.eps) break;
 		S0 = Sn;
 	}	
-	Dn[N] = Sn;
+	D0[N] = Sn;
 	Dnew = svdu*Sn*Gamma.transpose(); 
 	return Dnew;
 }
@@ -62,6 +65,7 @@ MatrixXd TuckerALS(MatrixXd T1, int d0, VectorXi dims, VectorXi rs, List Dn, Lis
 //***------------------CP approximation via TPM-------------------**
 // [[Rcpp::export]]
 MatrixXd CPTPM(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList){
+
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
@@ -69,7 +73,7 @@ MatrixXd CPTPM(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList
 	int m,j,k,N=opts.N,step,rprod=1;
 	double lamj=0.0,lamj0;
 	MatrixXd T,T1,U1,Tnew,Ttemp;
-	VectorXd svdu,Gamma,Gamma1,Gamma2,tmp,lambda;
+	VectorXd svdu,Gamma,tmp,lambda;
 	List Dnew(N+1);
 	
 	for(m=0;m<N-1;m++)  rprod*=dims[m];
@@ -88,19 +92,22 @@ MatrixXd CPTPM(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList
 			step++;
 			for(m=0;m<N;m++){
 				T = TransferModalUnfoldingsT(T1,N,m+1,dims);
-				if(m!=0) Gamma1 = as<VectorXd>(D0[0]);
-				for(j=1;j<m;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma1);
-					Gamma1 = tmp;
+				if(m==0){
+					Gamma = as<VectorXd>(D0[1]);
+					for(j=2;j<N;j++){
+						tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+						Gamma = tmp;
+					}						
+				}
+				else{
+					Gamma = as<VectorXd>(D0[0]);
+					for(j=1;j<N;j++){
+						if(j!=m){
+							tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}
+					}
 				}				
-				if(m!=N-1)Gamma2 = as<VectorXd>(D0[m+1]);
-				for(j=m+2;j<N;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma2);
-					Gamma2 = tmp;
-				}				
-				if(m==0) Gamma = Gamma2;
-				else if (m==N-1) Gamma = Gamma1;
-				else  Gamma = kroneckerProduct(Gamma2,Gamma1);	
 				svdu = T*Gamma;
 				lamj = svdu.norm();
 				svdu /= lamj; 
@@ -130,7 +137,7 @@ MatrixXd CPTPM(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList
 //***------------------CP approximation via TPM-------------------**
 // [[Rcpp::export]]
 MatrixXd CPTPMorthogon(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList){
-	
+
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
@@ -138,7 +145,7 @@ MatrixXd CPTPMorthogon(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List 
 	int m,j,k,N=opts.N,step,rprod=1;
 	double lamj=0.0, lamj0;
 	MatrixXd T,T1,U1,Tnew,Ttemp;
-	VectorXd svdu,Gamma,Gamma1,Gamma2,tmp,lambda;
+	VectorXd svdu,Gamma,tmp,lambda;
 	List Dnew(N+1);
 	d = MIN(d,MinVectorInt(dims,N));
 	
@@ -158,19 +165,22 @@ MatrixXd CPTPMorthogon(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List 
 			step++;				
 			for(m=0;m<N;m++){
 				T = TransferModalUnfoldingsT(T1,N,m+1,dims);
-				if(m!=0) Gamma1 = as<VectorXd>(D0[0]);
-				for(j=1;j<m;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma1);
-					Gamma1 = tmp;
-				}				
-				if(m!=N-1)Gamma2 = as<VectorXd>(D0[m+1]);
-				for(j=m+2;j<N;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma2);
-					Gamma2 = tmp;
-				}				
-				if(m==0) Gamma = Gamma2;
-				else if (m==N-1) Gamma = Gamma1;
-				else  Gamma = kroneckerProduct(Gamma2,Gamma1);	
+				if(m==0){
+					Gamma = as<VectorXd>(D0[1]);
+					for(j=2;j<N;j++){
+						tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+						Gamma = tmp;
+					}						
+				}
+				else{
+					Gamma = as<VectorXd>(D0[0]);
+					for(j=1;j<N;j++){
+						if(j!=m){
+							tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}
+					}
+				}
 				if(k==0) svdu = T*Gamma;
 				else{
 					U1 = (as<MatrixXd>(Dnew[m])).leftCols(k);					
@@ -215,7 +225,7 @@ MatrixXd CPTPM_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsL
 	int m,j,k,N=opts.N,step,rprod=1;
 	double lamj=0.0,lamj0;
 	MatrixXd T,T1,U1,Tnew,Ttemp;
-	VectorXd svdu,Gamma,Gamma1,Gamma2,tmp,lambda;
+	VectorXd svdu,Gamma,tmp,lambda;
 	List Dnew(N);
 	for(m=0;m<N;m++){
 		U1.setZero(dims[m],d);
@@ -234,19 +244,22 @@ MatrixXd CPTPM_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsL
 			step++;
 			for(m=0;m<N;m++){
 				T = TransferModalUnfoldingsT(T1,N,m+1,dims);
-				if(m!=0) Gamma1 = as<VectorXd>(D0[0]);
-				for(j=1;j<m;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma1);
-					Gamma1 = tmp;
-				}				
-				if(m!=N-1)Gamma2 = as<VectorXd>(D0[m+1]);
-				for(j=m+2;j<N;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma2);
-					Gamma2 = tmp;
-				}				
-				if(m==0) Gamma = Gamma2;
-				else if (m==N-1) Gamma = Gamma1;
-				else  Gamma = kroneckerProduct(Gamma2,Gamma1);	
+				if(m==0){
+					Gamma = as<VectorXd>(D0[1]);
+					for(j=2;j<N;j++){
+						tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+						Gamma = tmp;
+					}						
+				}
+				else{
+					Gamma = as<VectorXd>(D0[0]);
+					for(j=1;j<N;j++){
+						if(j!=m){
+							tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}
+					}
+				}
 				svdu = T*Gamma;
 				lamj = svdu.norm();
 				svdu /= lamj; 
@@ -279,7 +292,17 @@ MatrixXd CPTPM_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsL
 //***------------------CP approximation via TPM-------------------**
 // [[Rcpp::export]]
 MatrixXd CPTPMorthogon_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList){
-
+	/*
+	CANDECOMP/PARAFAC Decomposition approximation via Tensor Power Method
+	References:
+	Allen, G., 2012. 
+	Sparse higher-order principal components analysis, 
+	in: International Conference on Artificial Intelligence and Statistics, pp. 27-36.
+	
+	Zhengwu Zhanga, Genevera I. Allenb,c, Hongtu Zhud, David Dunson (2018).
+	Tensor network factorizations: Relationships between brain structural connectomes and traits.
+	Neuroimage
+	*/
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
@@ -289,7 +312,7 @@ MatrixXd CPTPMorthogon_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, Li
 	int m,j,k,N=opts.N,step,rprod=1;
 	double lamj=0.0,lamj0;
 	MatrixXd T,T1,U1,Tnew,Ttemp;
-	VectorXd svdu,Gamma,Gamma1,Gamma2,tmp,lambda;
+	VectorXd svdu,Gamma,tmp,lambda;
 	List Dnew(N);
 	d = MIN(d,MinVectorInt(dims,N));
 	
@@ -310,24 +333,27 @@ MatrixXd CPTPMorthogon_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, Li
 			step++;
 			for(m=0;m<N;m++){
 				T = TransferModalUnfoldingsT(T1,N,m+1,dims);
-				if(m!=0) Gamma1 = as<VectorXd>(D0[0]);
-				for(j=1;j<m;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma1);
-					Gamma1 = tmp;
-				}				
-				if(m!=N-1)Gamma2 = as<VectorXd>(D0[m+1]);
-				for(j=m+2;j<N;j++){
-					tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma2);
-					Gamma2 = tmp;
-				}				
-				if(m==0) Gamma = Gamma2;
-				else if (m==N-1) Gamma = Gamma1;
-				else  Gamma = kroneckerProduct(Gamma2,Gamma1);	
+				if(m==0){
+					Gamma = as<VectorXd>(D0[1]);
+					for(j=2;j<N;j++){
+						tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+						Gamma = tmp;
+					}						
+				}
+				else{
+					Gamma = as<VectorXd>(D0[0]);
+					for(j=1;j<N;j++){
+						if(j!=m){
+							tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}
+					}
+				}
 				if(k==0) svdu = T*Gamma;
 				else{
 					U1 = (as<MatrixXd>(Dnew[m])).leftCols(k);					
-					Ttemp = T*Gamma;
-					svdu = Ttemp - U1*(U1.transpose()*Ttemp);
+					tmp = T*Gamma;
+					svdu = tmp - U1*(U1.transpose()*tmp);
 				}					
 				lamj = svdu.norm();
 				svdu /= lamj; 
@@ -366,7 +392,7 @@ MatrixXd CPALS(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList
 	opts.max_step = as<int>(optsList["max_step"]);
 	
 	int m,j,N=opts.N,step,rprod=1;
-	MatrixXd T,T1,Tnew,svdu,Gamma,Gamma1,Gamma2,tmp,S0;
+	MatrixXd T,T1,Tnew,svdu,Gamma,tmp,S0;
 	
 	for(m=0;m<N-1;m++)  rprod*=dims[m];
 	S0.setZero(dims[N-1],rprod);
@@ -377,19 +403,22 @@ MatrixXd CPALS(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList
 		step++;
 		for(m=0;m<N;m++){
 			T = TransferModalUnfoldingsT(T1,d0,m+1,dims).transpose();
-			if(m!=0) Gamma1 = as<MatrixXd>(D0[0]);
-			for(j=1;j<m;j++){
-				tmp = KRP(as<MatrixXd>(D0[j]),Gamma1);
-				Gamma1 = tmp;
-			}				
-			if(m!=N-1)Gamma2 = as<MatrixXd>(D0[m+1]);
-			for(j=m+2;j<N;j++){
-				tmp = KRP(as<MatrixXd>(D0[j]),Gamma2);
-				Gamma2 = tmp;
-			}				
-			if(m==0) Gamma = Gamma2;
-			else if (m==N-1) Gamma = Gamma1;
-			else  Gamma = KRP(Gamma2,Gamma1);			
+			if(m==0){
+				Gamma = as<MatrixXd>(D0[1]);
+				for(j=2;j<N;j++){
+					tmp = KRP(as<MatrixXd>(D0[j]),Gamma);
+					Gamma = tmp;
+				}						
+			}
+			else{
+				Gamma = as<MatrixXd>(D0[0]);
+				for(j=1;j<N;j++){
+					if(j!=m){
+						tmp = KRP(as<MatrixXd>(D0[j]),Gamma);
+						Gamma = tmp;
+					}
+				}
+			}			
 			svdu = (Gamma.colPivHouseholderQr().solve(T)).transpose();
 			D0[m] = svdu;		
 		}		
@@ -513,7 +542,7 @@ MatrixXd CPTPMsym2(MatrixXd T0, int d, int k1, int k2, VectorXi dims, List D0, L
 //----------------------------------------------------------------**
 //***------------------CP approximation via TPM-------------------**
 // [[Rcpp::export]]
-MatrixXd CPTPMsym2Orth(MatrixXd T0, int d, int k1, int k2, VectorXi dims, List D0, List optsList){
+MatrixXd CPTPMsym2Orth(MatrixXd T0, int d, int k1, int k2, VectorXi dims, List D0, List optsList, List optsList_pen){
 
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
@@ -633,4 +662,218 @@ MatrixXd CPTPMsym2Orth(MatrixXd T0, int d, int k1, int k2, VectorXi dims, List D
 		if(k>0) D0[N] = lambda.head(k-1);
 	}
 	return Tnew;
+}//----------------------------------------------------------------**
+
+//-----------------------------------------------------------------**
+//***-------------sparseCP approximation via TPM-------------------**
+// [[Rcpp::export]]
+List SCPTPM(MatrixXd T0, int d0, int d, VectorXi dims, List D1, VectorXd lambda, List optsList, List optsList_pen){
+	opts.N = as<int>(optsList["N"]);
+	opts.eps = as<double>(optsList["eps"]);	
+	opts.max_step = as<int>(optsList["max_step"]);
+	
+	opts_pen.lam_max = as<double>(optsList_pen["lam_max"]);
+	opts_pen.lam_min = as<double>(optsList_pen["lam_min"]);
+	opts_pen.gamma = as<double>(optsList_pen["gamma"]);
+	opts_pen.alpha = as<double>(optsList_pen["alpha"]);
+	opts_pen.pen = as<int>(optsList_pen["pen"]);
+	opts_pen.nlam = lambda.size();	
+	
+	int nlam=opts_pen.nlam, penalty = opts_pen.pen;
+	double alpha = opts_pen.alpha, eps = opts.eps, gamma = opts_pen.gamma;
+	int l,m,j,k,N=opts.N,step;
+	double lamj=0.0,lamj0,lambda1;
+	MatrixXd T,T1,U1,Ttemp;
+	VectorXd svdu,Gamma,tmp,S,svdu1;
+	List Dnew(N+1), Dout(nlam*(N+1)),D0(N+1);
+	
+	for(m=0;m<N;m++){
+		U1.setZero(dims[m],d*N);
+		Dnew[m] = U1;
+	}
+	
+	S.setZero(d);
+
+    for(l=0;l<nlam;l++){		
+		lambda1 = lambda[l];
+		T1 = TransferModalUnfoldingsT(T0,d0,N,dims);
+		for(m=0;m<N;m++) D0[m] = as<VectorXd>(D1[m]);		
+		for(k=0;k<d;k++){				
+			step = 0;
+			lamj0 = 100000.0;
+			while(step < opts.max_step){
+				step++;
+				for(m=0;m<N;m++){
+					T = TransferModalUnfoldingsT(T1,N,m+1,dims);
+					if(m==0){
+						Gamma = as<VectorXd>(D0[1]);
+						for(j=2;j<N;j++){
+							tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}						
+					}
+					else{
+						Gamma = as<VectorXd>(D0[0]);
+						for(j=1;j<N;j++){
+							if(j!=m){
+								tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+								Gamma = tmp;
+							}
+						}
+					}			
+					svdu1 = T*Gamma;
+					lamj = svdu1.norm();
+					svdu1 /= lamj; 
+					svdu = updateAj(svdu1, lambda1, alpha, gamma, penalty);
+					lamj = svdu.norm();
+					if(lamj>1e-15) svdu /= lamj;
+					D0[m] = svdu;						
+				}				
+				if(fabs(lamj-lamj0)<eps) break;
+				lamj0 = lamj;
+			}//end while
+			Gamma = as<VectorXd>(D0[0]);
+			for(m=1;m<N-1;m++){
+				tmp = kroneckerProduct(as<VectorXd>(D0[m]),Gamma);
+				Gamma = tmp;
+			}
+			svdu = as<VectorXd>(D0[N-1]);
+			lamj = svdu.transpose()*T1*Gamma;			
+			S[k] = lamj;
+			Ttemp = lamj*kroneckerProduct(svdu,Gamma.transpose());  
+			T1 -= Ttemp;
+			for(m=0;m<N;m++){
+				U1 = as<MatrixXd>(Dnew[m]);
+				U1.col(k) = as<VectorXd>(D0[m]);
+				Dnew[m] = U1;
+			}
+						
+		}// end for(k=0;k<d;k++) 
+		for(m=0;m<N;m++){
+			U1 = as<MatrixXd>(Dnew[m]);
+			Dout[l*(N+1)+m] = U1;
+		}			
+		Dout[l*(N+1)+N] = S;	
+	}// end for(l=0;l<nlam;l++)
+	return Dout;
+}
+//-----------------------------------------------------------------**
+//***-------------sparseCP approximation via TPM-------------------**
+// [[Rcpp::export]]
+List SCPTPM_part(MatrixXd T0, int d0, int d, VectorXi dims, VectorXi actives, List D1, VectorXd lambda, List optsList, List optsList_pen){
+	opts.N = as<int>(optsList["N"]);
+	opts.eps = as<double>(optsList["eps"]);	
+	opts.max_step = as<int>(optsList["max_step"]);
+	
+	opts_pen.lam_max = as<double>(optsList_pen["lam_max"]);
+	opts_pen.lam_min = as<double>(optsList_pen["lam_min"]);
+	opts_pen.gamma = as<double>(optsList_pen["gamma"]);
+	opts_pen.alpha = as<double>(optsList_pen["alpha"]);
+	opts_pen.pen = as<int>(optsList_pen["pen"]);
+	opts_pen.nlam = lambda.size();	
+	
+	int nlam=opts_pen.nlam, penalty = opts_pen.pen;
+	double alpha = opts_pen.alpha, eps = opts.eps, gamma = opts_pen.gamma;
+	int l,m,i,j,k,N=opts.N,step;
+	double lamj=0.0,lamj0,lambda1, nas = actives.size(), nnas = N-nas;
+	MatrixXd T,T1,U1,Ttemp;
+	VectorXd svdu,Gamma,tmp,S,svdu1;
+	VectorXi nonactives;
+	nonactives.setZero(nnas);
+	List Dnew(N+1), Dout(nlam*(N+1)),D0(N+1);
+	
+	for(m=0;m<N;m++){
+		U1.setZero(dims[m],d*N);
+		Dnew[m] = U1;
+	}
+	
+	S.setZero(d);
+
+    for(l=0;l<nlam;l++){		
+		lambda1 = lambda[l];
+		T1 = TransferModalUnfoldingsT(T0,d0,N,dims);
+		for(m=0;m<N;m++) D0[m] = as<VectorXd>(D1[m]);		
+		for(k=0;k<d;k++){				
+			step = 0;
+			lamj0 = 100000.0;
+			while(step < opts.max_step){
+				step++;
+				for(i=0;i<nnas;i++){
+					m = nonactives[i];
+					T = TransferModalUnfoldingsT(T1,N,m+1,dims);
+					if(m==0){
+						Gamma = as<VectorXd>(D0[1]);
+						for(j=2;j<N;j++){
+							tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}						
+					}
+					else{
+						Gamma = as<VectorXd>(D0[0]);
+						for(j=1;j<N;j++){
+							if(j!=m){
+								tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+								Gamma = tmp;
+							}
+						}
+					}					
+                    svdu = T*Gamma;
+					lamj = svdu.norm();
+					if(lamj>1e-15) svdu /= lamj; 
+					D0[m] = svdu;		
+				}
+				
+				for(i=0;i<nas;i++){
+					m = actives[i];
+					T = TransferModalUnfoldingsT(T1,N,m+1,dims);
+					if(m==0){
+						Gamma = as<VectorXd>(D0[1]);
+						for(j=2;j<N;j++){
+							tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}						
+					}
+					else{
+						Gamma = as<VectorXd>(D0[0]);
+						for(j=1;j<N;j++){
+							if(j!=m){
+								tmp = kroneckerProduct(as<VectorXd>(D0[j]),Gamma);
+								Gamma = tmp;
+							}
+						}
+					}			
+					svdu1 = T*Gamma;
+					lamj = svdu1.norm();
+					svdu1 /= lamj; 
+					svdu = updateAj(svdu1, lambda1, alpha, gamma, penalty);
+					lamj = svdu.norm();
+					if(lamj>1e-10) svdu /= lamj;
+					D0[m] = svdu;						
+				}				
+				if(fabs(lamj-lamj0)<eps) break;
+				lamj0 = lamj;
+			}//end while
+			Gamma = as<VectorXd>(D0[0]);
+			for(m=1;m<N-1;m++){
+				tmp = kroneckerProduct(as<VectorXd>(D0[m]),Gamma);
+				Gamma = tmp;
+			}
+			svdu = as<VectorXd>(D0[N-1]);
+			lamj = svdu.transpose()*T1*Gamma;			
+			S[k] = lamj;
+			Ttemp = lamj*kroneckerProduct(svdu,Gamma.transpose());  
+			T1 -= Ttemp;
+			for(m=0;m<N;m++){
+				U1 = as<MatrixXd>(Dnew[m]);
+				U1.col(k) = as<VectorXd>(D0[m]);
+				Dnew[m] = U1;
+			}						
+		}// end for(k=0;k<d;k++) 
+		for(m=0;m<N;m++){
+			U1 = as<MatrixXd>(Dnew[m]);
+			Dout[l*(N+1)+m] = U1;
+		}				
+		Dout[l*(N+1)+N] = S;	
+	}// end for(l=0;l<nlam;l++)
+	return Dout;
 }

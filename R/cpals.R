@@ -43,7 +43,9 @@ cpals <- function(Y=NULL,d0=NULL,dims=NULL,dr=NULL,D0=NULL,eps=1e-4,max_step=50,
       S = 0
       D0[[N+1]] = S
     }
+    D1 = D0
     Dnew <- CPALS(Y,dd,dr,dims,D0,opts)
+    ranks = dr
   }
   else{
     dm = 100
@@ -66,7 +68,10 @@ cpals <- function(Y=NULL,d0=NULL,dims=NULL,dr=NULL,D0=NULL,eps=1e-4,max_step=50,
       }
       Dnew <- CPALS(Y,dd,k,dims,D1,opts)
       diff = Y - Dnew
-      if(sqrt(sum(diff^2)/sum(Y^2))<thresh) break
+      if(sqrt(sum(diff^2)/sum(Y^2))<thresh){
+        ranks = k
+        break
+      }
     }
   }
   
@@ -75,7 +80,7 @@ cpals <- function(Y=NULL,d0=NULL,dims=NULL,dr=NULL,D0=NULL,eps=1e-4,max_step=50,
   
   return (list(Tnew=Tnew,
                Tn=D1,
-               ranks=k
+               ranks=ranks
                )
   )
 }

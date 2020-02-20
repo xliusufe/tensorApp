@@ -20,8 +20,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // TuckerALS
-MatrixXd TuckerALS(MatrixXd T1, int d0, VectorXi dims, VectorXi rs, List Dn, List optsList);
-RcppExport SEXP _tensorApp_TuckerALS(SEXP T1SEXP, SEXP d0SEXP, SEXP dimsSEXP, SEXP rsSEXP, SEXP DnSEXP, SEXP optsListSEXP) {
+MatrixXd TuckerALS(MatrixXd T1, int d0, VectorXi dims, VectorXi rs, List D0, List optsList);
+RcppExport SEXP _tensorApp_TuckerALS(SEXP T1SEXP, SEXP d0SEXP, SEXP dimsSEXP, SEXP rsSEXP, SEXP D0SEXP, SEXP optsListSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -29,9 +29,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type d0(d0SEXP);
     Rcpp::traits::input_parameter< VectorXi >::type dims(dimsSEXP);
     Rcpp::traits::input_parameter< VectorXi >::type rs(rsSEXP);
-    Rcpp::traits::input_parameter< List >::type Dn(DnSEXP);
+    Rcpp::traits::input_parameter< List >::type D0(D0SEXP);
     Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
-    rcpp_result_gen = Rcpp::wrap(TuckerALS(T1, d0, dims, rs, Dn, optsList));
+    rcpp_result_gen = Rcpp::wrap(TuckerALS(T1, d0, dims, rs, D0, optsList));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -133,8 +133,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // CPTPMsym2Orth
-MatrixXd CPTPMsym2Orth(MatrixXd T0, int d, int k1, int k2, VectorXi dims, List D0, List optsList);
-RcppExport SEXP _tensorApp_CPTPMsym2Orth(SEXP T0SEXP, SEXP dSEXP, SEXP k1SEXP, SEXP k2SEXP, SEXP dimsSEXP, SEXP D0SEXP, SEXP optsListSEXP) {
+MatrixXd CPTPMsym2Orth(MatrixXd T0, int d, int k1, int k2, VectorXi dims, List D0, List optsList, List optsList_pen);
+RcppExport SEXP _tensorApp_CPTPMsym2Orth(SEXP T0SEXP, SEXP dSEXP, SEXP k1SEXP, SEXP k2SEXP, SEXP dimsSEXP, SEXP D0SEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -145,7 +145,45 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< VectorXi >::type dims(dimsSEXP);
     Rcpp::traits::input_parameter< List >::type D0(D0SEXP);
     Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
-    rcpp_result_gen = Rcpp::wrap(CPTPMsym2Orth(T0, d, k1, k2, dims, D0, optsList));
+    Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPTPMsym2Orth(T0, d, k1, k2, dims, D0, optsList, optsList_pen));
+    return rcpp_result_gen;
+END_RCPP
+}
+// SCPTPM
+List SCPTPM(MatrixXd T0, int d0, int d, VectorXi dims, List D1, VectorXd lambda, List optsList, List optsList_pen);
+RcppExport SEXP _tensorApp_SCPTPM(SEXP T0SEXP, SEXP d0SEXP, SEXP dSEXP, SEXP dimsSEXP, SEXP D1SEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type T0(T0SEXP);
+    Rcpp::traits::input_parameter< int >::type d0(d0SEXP);
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type dims(dimsSEXP);
+    Rcpp::traits::input_parameter< List >::type D1(D1SEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
+    rcpp_result_gen = Rcpp::wrap(SCPTPM(T0, d0, d, dims, D1, lambda, optsList, optsList_pen));
+    return rcpp_result_gen;
+END_RCPP
+}
+// SCPTPM_part
+List SCPTPM_part(MatrixXd T0, int d0, int d, VectorXi dims, VectorXi actives, List D1, VectorXd lambda, List optsList, List optsList_pen);
+RcppExport SEXP _tensorApp_SCPTPM_part(SEXP T0SEXP, SEXP d0SEXP, SEXP dSEXP, SEXP dimsSEXP, SEXP activesSEXP, SEXP D1SEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type T0(T0SEXP);
+    Rcpp::traits::input_parameter< int >::type d0(d0SEXP);
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type dims(dimsSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type actives(activesSEXP);
+    Rcpp::traits::input_parameter< List >::type D1(D1SEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
+    rcpp_result_gen = Rcpp::wrap(SCPTPM_part(T0, d0, d, dims, actives, D1, lambda, optsList, optsList_pen));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -177,6 +215,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// setuplambdaPC
+VectorXd setuplambdaPC(MatrixXd T0, int d0, VectorXi dims, List D0, int nlam, VectorXd setlam);
+RcppExport SEXP _tensorApp_setuplambdaPC(SEXP T0SEXP, SEXP d0SEXP, SEXP dimsSEXP, SEXP D0SEXP, SEXP nlamSEXP, SEXP setlamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type T0(T0SEXP);
+    Rcpp::traits::input_parameter< int >::type d0(d0SEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type dims(dimsSEXP);
+    Rcpp::traits::input_parameter< List >::type D0(D0SEXP);
+    Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type setlam(setlamSEXP);
+    rcpp_result_gen = Rcpp::wrap(setuplambdaPC(T0, d0, dims, D0, nlam, setlam));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_tensorApp_KRP", (DL_FUNC) &_tensorApp_KRP, 2},
@@ -187,9 +241,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_tensorApp_CPTPMorthogon_dr", (DL_FUNC) &_tensorApp_CPTPMorthogon_dr, 6},
     {"_tensorApp_CPALS", (DL_FUNC) &_tensorApp_CPALS, 6},
     {"_tensorApp_CPTPMsym2", (DL_FUNC) &_tensorApp_CPTPMsym2, 7},
-    {"_tensorApp_CPTPMsym2Orth", (DL_FUNC) &_tensorApp_CPTPMsym2Orth, 7},
+    {"_tensorApp_CPTPMsym2Orth", (DL_FUNC) &_tensorApp_CPTPMsym2Orth, 8},
+    {"_tensorApp_SCPTPM", (DL_FUNC) &_tensorApp_SCPTPM, 8},
+    {"_tensorApp_SCPTPM_part", (DL_FUNC) &_tensorApp_SCPTPM_part, 9},
     {"_tensorApp_TransferModalUnfoldingsT", (DL_FUNC) &_tensorApp_TransferModalUnfoldingsT, 4},
     {"_tensorApp_gtsem0", (DL_FUNC) &_tensorApp_gtsem0, 4},
+    {"_tensorApp_setuplambdaPC", (DL_FUNC) &_tensorApp_setuplambdaPC, 6},
     {NULL, NULL, 0}
 };
 
