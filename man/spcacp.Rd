@@ -130,7 +130,7 @@
   
   
   # Example 2
-  img = readPNG(system.file("img", "Rlogo.png", package="tensorApp"))
+  img = readPNG(system.file("data", "Rlogo.png", package="tensorApp"))
   writePNG(img,target = "Rlogo.png")
   
   Tn = spcacp(img,dr=20,dims=dim(img))

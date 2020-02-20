@@ -96,7 +96,7 @@
   
   # Example 2
   library(png)
-  bat = readPNG(system.file("img", "bat.png", package="tensorApp"))
+  bat = readPNG(system.file("data", "bat.png", package="tensorApp"))
   writePNG(bat,target = "bat.png")
   
   Tn = hosvd(bat,dr=20,dims=dim(bat))
@@ -105,7 +105,7 @@
   writePNG(Tn$Tnew,target = "batTucker.png")
   
   # Example 3
-  img = readPNG(system.file("img", "Rlogo.png", package="tensorApp"))
+  img = readPNG(system.file("data", "Rlogo.png", package="tensorApp"))
   writePNG(img,target = "Rlogo.png")
   
   Tn = hosvd(img,dr=20,dims=dim(img))
@@ -115,7 +115,7 @@
   
   
   # Example 4
-  covid19 = readPNG(system.file("img", "covid19.png", package="tensorApp"))
+  covid19 = readPNG(system.file("data", "covid19.png", package="tensorApp"))
   writePNG(covid19,target = "covid19.png")
   
   Tn = hosvd(covid19,dr=20,dims=dim(covid19))
