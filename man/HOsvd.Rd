@@ -115,11 +115,11 @@
   
   
   # Example 4
-  covid19 = readPNG(system.file("data", "covid19.png", package="tensorApp"))
-  writePNG(covid19,target = "covid19.png")
-  
-  Tn = hosvd(covid19,dr=20,dims=dim(covid19))
+  SarsCov2 = readPNG(system.file("data", "SarsCov2.png", package="tensorApp"))
+  writePNG(SarsCov2,target = "SarsCov2.png")
+
+  Tn = hosvd(SarsCov2,dr=20,dims=dim(SarsCov2))
   writePNG(Tn$Tnew,target = "covid19CP.png")
-  Tn = hosvd(covid19,dr=50,dims=dim(covid19),isCP=F,ranks = c(20,20,3))
-  writePNG(Tn$Tnew,target = "covid19Tucker.png")
+  Tn = hosvd(SarsCov2,dr=50,dims=dim(SarsCov2),isCP=F,ranks = c(20,20,3))
+  writePNG(Tn$Tnew,target = "SarsCov2Tucker.png")
 }
