@@ -37,15 +37,11 @@ hosvd_dr <- function(Y=NULL,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NUL
   
   if(!isCP&is.null(D0)){
     set.seed(1)
-    d = 1
     D0 = list();
-    for(j in 1:N){
-      r1_max = min(ranks[[j]]) 
-      d = d*r1_max
-      A = rbind(diag(r1_max), matrix(0,dims[j]-r1_max,r1_max))
-      D0[[j]] = A
-    }
-    D0[[N+1]] = matrix(runif(d,1,2),ranks[N])
+    rmax = max(ranks) 
+    for(j in 1:N)    D0[[j]] = diag(dims[j])
+    d = rmax^N
+    D0[[N+1]] = matrix(runif(d,1,2),rmax)
   }
   if(isCP&is.null(D0)){
     set.seed(1)
@@ -65,7 +61,6 @@ hosvd_dr <- function(Y=NULL,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NUL
     D1 = D0
   }
   else{
-    dm = min(dr,max(ranks))
     ranks1 = rep(1,N)
     D1 = list()
     for(j in 1:N){
@@ -74,9 +69,9 @@ hosvd_dr <- function(Y=NULL,d0=NULL,dims=NULL,isCP=TRUE,ranks=NULL,dr=100,D0=NUL
     }
     D1[[N+1]] = 1
     flag = 0
-    for(k in 1:dm){
+    for(k in 1:dr){
       for(j in 1:N){
-        if(k<ranks1[j])  ranks1[j] = ranks1[j]+1
+        if(k<dims[j])  ranks1[j] = ranks1[j]+1
         A = D0[[j]]
         D1[[j]] = as.matrix(A[,1:ranks1[j]])
         ds = prod(ranks1)

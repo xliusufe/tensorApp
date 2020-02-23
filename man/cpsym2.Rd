@@ -76,7 +76,7 @@
 
 \keyword{CP decomposition; HOSVD; Tucker decomposition. }
 \seealso{
-  hosvd_dr
+  hosvd_dr, tdsym2
 }
 \examples{ 
   

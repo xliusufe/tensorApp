@@ -150,6 +150,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// TuckerALSsym2
+MatrixXd TuckerALSsym2(MatrixXd T0, int k1, int k2, VectorXi dims, VectorXi rs, List D0, List optsList);
+RcppExport SEXP _tensorApp_TuckerALSsym2(SEXP T0SEXP, SEXP k1SEXP, SEXP k2SEXP, SEXP dimsSEXP, SEXP rsSEXP, SEXP D0SEXP, SEXP optsListSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type T0(T0SEXP);
+    Rcpp::traits::input_parameter< int >::type k1(k1SEXP);
+    Rcpp::traits::input_parameter< int >::type k2(k2SEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type dims(dimsSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type rs(rsSEXP);
+    Rcpp::traits::input_parameter< List >::type D0(D0SEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    rcpp_result_gen = Rcpp::wrap(TuckerALSsym2(T0, k1, k2, dims, rs, D0, optsList));
+    return rcpp_result_gen;
+END_RCPP
+}
 // SCPTPM
 List SCPTPM(MatrixXd T0, int d0, int d, VectorXi dims, List D1, VectorXd lambda, List optsList, List optsList_pen);
 RcppExport SEXP _tensorApp_SCPTPM(SEXP T0SEXP, SEXP d0SEXP, SEXP dSEXP, SEXP dimsSEXP, SEXP D1SEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
@@ -242,6 +259,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_tensorApp_CPALS", (DL_FUNC) &_tensorApp_CPALS, 6},
     {"_tensorApp_CPTPMsym2", (DL_FUNC) &_tensorApp_CPTPMsym2, 7},
     {"_tensorApp_CPTPMsym2Orth", (DL_FUNC) &_tensorApp_CPTPMsym2Orth, 8},
+    {"_tensorApp_TuckerALSsym2", (DL_FUNC) &_tensorApp_TuckerALSsym2, 7},
     {"_tensorApp_SCPTPM", (DL_FUNC) &_tensorApp_SCPTPM, 8},
     {"_tensorApp_SCPTPM_part", (DL_FUNC) &_tensorApp_SCPTPM_part, 9},
     {"_tensorApp_TransferModalUnfoldingsT", (DL_FUNC) &_tensorApp_TransferModalUnfoldingsT, 4},

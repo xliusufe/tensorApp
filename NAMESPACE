@@ -2,4 +2,7 @@ importFrom("stats", "rnorm", "runif")
 useDynLib(tensorApp, .registration=TRUE)
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
-export(hosvd,hosvd_dr,ttu,tmp,cpals,cpsym2,gtt,gttsem,gtcp,gtcpsem)
+export(hosvd,hosvd_dr,cpals,       
+       gtt,gttsem,gtcp,gtcpsem,
+	   cpsym2,tdsym2,
+	   ttu,tmp,)

@@ -292,17 +292,7 @@ MatrixXd CPTPM_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsL
 //***------------------CP approximation via TPM-------------------**
 // [[Rcpp::export]]
 MatrixXd CPTPMorthogon_dr(MatrixXd T0, int d0, int d, VectorXi dims, List D0, List optsList){
-	/*
-	CANDECOMP/PARAFAC Decomposition approximation via Tensor Power Method
-	References:
-	Allen, G., 2012. 
-	Sparse higher-order principal components analysis, 
-	in: International Conference on Artificial Intelligence and Statistics, pp. 27-36.
-	
-	Zhengwu Zhanga, Genevera I. Allenb,c, Hongtu Zhud, David Dunson (2018).
-	Tensor network factorizations: Relationships between brain structural connectomes and traits.
-	Neuroimage
-	*/
+
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
@@ -662,7 +652,83 @@ MatrixXd CPTPMsym2Orth(MatrixXd T0, int d, int k1, int k2, VectorXi dims, List D
 		if(k>0) D0[N] = lambda.head(k-1);
 	}
 	return Tnew;
-}//----------------------------------------------------------------**
+}
+//----------------------------------------------------------------**
+//***------------------Tucker approximation via ALS---------------**
+// [[Rcpp::export]]
+MatrixXd TuckerALSsym2(MatrixXd T0, int k1, int k2, VectorXi dims, VectorXi rs, List D0, List optsList){
+	//Tucker approximation via alterating least squares for semi-symmetric tensor
+	opts.N = as<int>(optsList["N"]);
+	opts.eps = as<double>(optsList["eps"]);	
+	opts.max_step = as<int>(optsList["max_step"]);
+	
+	int m,j,N=opts.N,step = 0,rprod=1;
+	MatrixXd T,Gamma,tmp,svdu, Sn,S0,Dnew,T1=T0,T2;
+	VectorXi dims1;
+	for(m=0;m<N;m++)  if(m!=k2) rprod*=rs[m];
+	S0.setZero(rs[k2],rprod);
+
+	while(step < opts.max_step){
+		step++;
+		for(m=0;m<N;m++){
+			if(m!=k1&&m!=k2){
+				T = TransferModalUnfoldingsT(T1,N,m+1,dims);			
+				if(m==0){
+					Gamma = as<MatrixXd>(D0[1]);
+					for(j=2;j<N;j++){
+						tmp = kroneckerProduct(as<MatrixXd>(D0[j]),Gamma);
+						Gamma = tmp;
+					}						
+				}
+				else{
+					Gamma = as<MatrixXd>(D0[0]);
+					for(j=1;j<N;j++){
+						if(j!=m){
+							tmp = kroneckerProduct(as<MatrixXd>(D0[j]),Gamma);
+							Gamma = tmp;
+						}
+					}
+				}				
+				JacobiSVD<MatrixXd> svd(T*Gamma, ComputeThinU | ComputeThinV);
+				svdu = svd.matrixU().leftCols(rs[m]);
+				D0[m] = svdu;	
+			}
+		} 		
+		dims1 = dims;
+		T2 = TransferModalUnfoldingsT(T1,N,1,dims);
+		for(j=0;j<N;j++){
+			if(j!=k1&&j!=k2){	
+				T = TransferModalUnfoldingsT(T2,1,j+1,dims1);					
+				Gamma = as<MatrixXd>(D0[j]);
+				dims1[j] = rs[j];
+				T2 = TransferModalUnfoldingsT(Gamma.transpose()*T,j+1,1,dims1);								
+			}					
+		}
+		T = TransferModalUnfoldingsT(T2,1,k1+1,dims1);
+		JacobiSVD<MatrixXd> svd(T, ComputeThinU | ComputeThinV);
+		svdu = svd.matrixU().leftCols(rs[k1]);		
+		D0[k1] = svdu;	
+		D0[k2] = svdu;	
+	
+		dims1[k1] = rs[k1];		
+		T2 = TransferModalUnfoldingsT(svdu.transpose()*T,k1+1,k2+1,dims1);		
+		Sn = svdu.transpose()*T2; 	
+		
+		if((Sn-S0).norm()/(S0.norm()+1)<opts.eps) break;
+		S0 = Sn;
+	}
+	S0 = TransferModalUnfoldingsT(Sn,k2+1,N,rs);
+	D0[N] = S0;
+	
+	Gamma = as<MatrixXd>(D0[0]);
+	for(j=1;j<N-1;j++){
+		tmp = kroneckerProduct(as<MatrixXd>(D0[j]),Gamma);
+		Gamma = tmp;
+	}
+	svdu = as<MatrixXd>(D0[N-1]);
+	Dnew = svdu*S0*Gamma.transpose(); 
+	return Dnew;
+}
 
 //-----------------------------------------------------------------**
 //***-------------sparseCP approximation via TPM-------------------**

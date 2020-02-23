@@ -37,6 +37,10 @@ CPTPMsym2Orth <- function(T0, d, k1, k2, dims, D0, optsList, optsList_pen) {
     .Call(`_tensorApp_CPTPMsym2Orth`, T0, d, k1, k2, dims, D0, optsList, optsList_pen)
 }
 
+TuckerALSsym2 <- function(T0, k1, k2, dims, rs, D0, optsList) {
+    .Call(`_tensorApp_TuckerALSsym2`, T0, k1, k2, dims, rs, D0, optsList)
+}
+
 SCPTPM <- function(T0, d0, d, dims, D1, lambda, optsList, optsList_pen) {
     .Call(`_tensorApp_SCPTPM`, T0, d0, d, dims, D1, lambda, optsList, optsList_pen)
 }
