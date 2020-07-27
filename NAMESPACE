@@ -5,4 +5,4 @@ importFrom(Rcpp, evalCpp)
 export(hosvd,hosvd_dr,cpals,       
        gtt,gttsem,gtcp,gtcpsem,
 	   cpsym2,tdsym2,
-	   ttu,tmp,)
+	   ttu,tmp)

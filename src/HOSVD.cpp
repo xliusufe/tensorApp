@@ -18,7 +18,7 @@ MatrixXd KRP(MatrixXd A, MatrixXd B){//Khatri-Rao Product
 //***------------------Tucker approximation via ALS---------------**
 // [[Rcpp::export]]
 MatrixXd TuckerALS(MatrixXd T1, int d0, VectorXi dims, VectorXi rs, List D0, List optsList){
-	//Tucker approximation via alterating least squares fameworw
+	//Tucker approximation via alterating least squares famework
 	opts.N = as<int>(optsList["N"]);
 	opts.eps = as<double>(optsList["eps"]);	
 	opts.max_step = as<int>(optsList["max_step"]);
